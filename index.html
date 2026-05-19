@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mirror</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #intro {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 28px;
+      font-weight: bold;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translate(-50%,-60%); }
+      100% { opacity: 1; transform: translate(-50%,-50%); }
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      max-width: 400px;
+      border-radius: 12px;
+      display: none;
+      margin-top: 20px;
+    }
+
+    .msg {
+      margin-top: 30vh;
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro">Hi ❤️ <span id="name">There</span></div>
+
+<div id="msg" class="msg" style="display:none;">
+  <h2>Opening Mirror...</h2>
+  <p>Please allow camera access</p>
+</div>
+
+<video id="video" autoplay playsinline></video>
+
+<script>
+  const herName = "YourNameHere";
+  document.getElementById("name").innerText = herName;
+
+  setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("msg").style.display = "block";
+    startCamera();
+  }, 2500);
+
+  async function startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+        audio: false
+      });
+
+      document.getElementById("msg").style.display = "none";
+      const video = document.getElementById("video");
+      video.style.display = "block";
+      video.srcObject = stream;
+
+    } catch (err) {
+      document.getElementById("msg").innerHTML = "Camera permission denied";
+    }
+  }
+</script>
+
+</body>
+</html>
