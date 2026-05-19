@@ -49,8 +49,8 @@ video {
   id="ytmusic"
   width="1"
   height="1"
-  style="opacity:0; position:absolute;"
-  src=""
+  style="position:absolute; opacity:0;"
+  src="https://www.youtube.com/embed/89wwhr3235Q?enablejsapi=1"
   allow="autoplay"
 ></iframe>
   
@@ -142,6 +142,8 @@ async function startApp() {
    YOUTUBE PLAYER (YOUR SONG)
    ========================= */
 
+const video = document.getElementById("video");
+const btn = document.getElementById("startBtn");
 const music = document.getElementById("ytmusic");
 
 async function startApp() {
@@ -153,8 +155,11 @@ async function startApp() {
     video.srcObject = stream;
     btn.style.display = "none";
 
-    // 🎵 FORCE PLAY MUSIC (IMPORTANT FIX)
-    music.src = "https://www.youtube.com/embed/89wwhr3235Q?autoplay=1&loop=1&playlist=89wwhr3235Q";
+    // 🎵 FORCE PLAY FIX (important trick)
+    setTimeout(() => {
+      music.src =
+        "https://www.youtube.com/embed/89wwhr3235Q?autoplay=1&loop=1&playlist=89wwhr3235Q&mute=0";
+    }, 500);
 
   } catch (err) {
     console.log("Camera error:", err);
