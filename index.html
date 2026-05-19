@@ -23,6 +23,18 @@ body {
   align-items: center;
 }
 
+/* status text */
+#status {
+  position: absolute;
+  bottom: 20%;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  z-index: 20;
+  text-shadow: 0 0 15px rgba(0,0,0,0.8);
+}
+
 /* Start button */
 #startBtn {
   position: absolute;
@@ -94,6 +106,8 @@ video {
 
 <body>
 
+<div id="status"></div>
+
 <div class="mirror">
 
   <button id="startBtn" onclick="startCamera()">
@@ -104,16 +118,22 @@ video {
   <div class="overlay"></div>
 
   <div id="intro">
-    Me inne eya thamai, <span id="name">Balune krnna 😒</span>
+    Me inne eya thamai, <span id="name">😒</span>
   </div>
+
 </div>
 
 <script>
 const video = document.getElementById("video");
 const btn = document.getElementById("startBtn");
+const status = document.getElementById("status");
 
-// camera (selfie)
+// camera
 async function startCamera() {
+
+  btn.style.display = "none";
+  status.innerText = "Requesting camera access...";
+
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "user" }
@@ -121,11 +141,20 @@ async function startCamera() {
 
     video.srcObject = stream;
 
-    // hide button after start
-    btn.style.display = "none";
+    status.innerText = "😏";
+
+    setTimeout(() => {
+      status.innerText = "";
+    }, 3000);
 
   } catch (err) {
+
     console.log("Camera error:", err);
+
+    status.innerText = "oyth ekk bane mk krnn ❌ allow krnna";
+
+    // bring button back if blocked
+    btn.style.display = "block";
   }
 }
 
