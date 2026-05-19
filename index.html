@@ -1,85 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Mirror</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirror</title>
 
-    #intro {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      font-size: 28px;
-      font-weight: bold;
-      opacity: 0;
-      animation: fadeIn 2s forwards;
-    }
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: radial-gradient(circle at top, #1a1a1a, #000);
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translate(-50%,-60%); }
-      100% { opacity: 1; transform: translate(-50%,-50%); }
-    }
+/* mirror frame */
+.mirror {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    video {
-      width: 100%;
-      height: auto;
-      max-width: 400px;
-      border-radius: 12px;
-      display: none;
-      margin-top: 20px;
-    }
+/* video styling */
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(1.05) contrast(1.1) saturate(1.2);
+  transform: scaleX(-1);
+}
 
-    .msg {
-      margin-top: 30vh;
-    }
-  </style>
+/* soft romantic overlay */
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255,0,120,0.08), transparent 60%);
+  pointer-events: none;
+}
+
+/* text UI */
+#intro {
+  position: absolute;
+  top: 20%;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 26px;
+  font-weight: 500;
+  text-shadow: 0 0 20px rgba(255, 0, 120, 0.6);
+  animation: fadeIn 2s ease-in-out;
+}
+
+#name {
+  color: #ff4da6;
+  font-weight: bold;
+}
+
+/* floating hearts */
+.heart {
+  position: absolute;
+  color: rgba(255, 77, 166, 0.6);
+  font-size: 18px;
+  animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
+
 <body>
 
-<div id="intro">mokkd kiynne oya<span id="name">There</span></div>
+<div class="mirror">
+  <video id="video" autoplay playsinline muted></video>
+  <div class="overlay"></div>
 
-<div id="msg" class="msg" style="display:none;">
-  <h2>Opening Mirror...</h2>
-  <p>Please allow camera access</p>
+  <div id="intro">
+    Hi ❤️ <span id="name">There</span>
+  </div>
 </div>
 
-<video id="video" autoplay playsinline></video>
-
 <script>
-  const herName = "Laki😒";
-  document.getElementById("name").innerText = herName;
+// camera
+const video = document.getElementById("video");
 
-  setTimeout(() => {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("msg").style.display = "block";
-    startCamera();
-  }, 2500);
-
-  async function startCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
-        audio: false
-      });
-
-      document.getElementById("msg").style.display = "none";
-      const video = document.getElementById("video");
-      video.style.display = "block";
-      video.srcObject = stream;
-
-    } catch (err) {
-      document.getElementById("msg").innerHTML = "Camera permission denied";
-    }
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+    video.srcObject = stream;
+  } catch (err) {
+    console.log(err);
   }
+}
+
+startCamera();
+
+// floating hearts generator
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "❤";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.top = "100vh";
+  heart.style.fontSize = (10 + Math.random() * 20) + "px";
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 6000);
+}
+
+setInterval(createHeart, 700);
+
+// optional: change name
+document.getElementById("name").innerText = "Her Name";
 </script>
 
 </body>
